@@ -1,28 +1,6 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-// import "./App.css";
-
-class Resources {
-  constructor() {
-    this.toLoad = {
-      sky: "./sprites/sky.png",
-      hero: "./sprites/hero-sheet.png",
-      ground: "./sprites/ground.png",
-      shadow: "./sprites/shadow.png",
-    };
-    this.images = {};
-    // Load in images
-    Object.keys(this.toLoad).forEach((key) => {
-      const img = new Image();
-      img.src = this.toLoad[key];
-      this.images[key] = {
-        image: img,
-        isLoaded: false,
-      };
-      img.onload = () => (this.images[key].isLoaded = true);
-    });
-  }
-}
+import { resources } from "./Resources";
 
 const MainContainer = styled.div`
   padding: 2vh 2vw;
@@ -36,12 +14,24 @@ const StyledCanvas = styled.canvas`
 `;
 
 function App() {
-  let assets = new Resources();
-  console.log("Resources", assets);
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    console.log("resources", resources);
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const draw = () => {
+      const sky = resources.images.sky;
+      if (sky.isLoaded) {
+        ctx.drawImage(sky.image, 0, 0);
+      }
+    };
+    draw();
+  }, []);
+
   return (
     <MainContainer>
       <div>MainContainer Heading</div>
-      <StyledCanvas></StyledCanvas>
+      <StyledCanvas ref={canvasRef}></StyledCanvas>
     </MainContainer>
   );
 }
