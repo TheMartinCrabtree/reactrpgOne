@@ -1,5 +1,4 @@
-/*
-class Sprites {
+class Sprite {
   constructor({
     resource, // target image
     frameSize, // cropped image size
@@ -32,7 +31,4 @@ class Sprites {
   };
 }
 
-const resources = new Resources();
-
-export { resources };
-*/
+export { Sprite };

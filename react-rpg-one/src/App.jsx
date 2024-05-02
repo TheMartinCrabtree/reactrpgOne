@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { resources } from "./Resources";
+import { Sprite } from "./Sprites";
 
 const MainContainer = styled.div`
   padding: 2vh 2vw;
@@ -8,41 +9,67 @@ const MainContainer = styled.div`
   image-rendering: pixelated;
 `;
 const StyledCanvas = styled.canvas`
-  width: 320;
-  height: 180;
+  width: 800px;
+  height: 600px;
   background-color: blue;
 `;
 
+const draw = (resources, ctx) => {
+  console.log("drawing resources", resources);
+  const sky = resources.images.sky;
+  if (sky.isLoaded) {
+    ctx.drawImage(sky.image, 0, 0);
+  }
+};
+
 function App() {
   const [canDraw, setCanDraw] = useState(false);
+  const [ctx, setCtx] = useState(null);
   const canvasRef = useRef(null);
-
-  const getResourceStatus = () => {
-    console.log("updating resource status");
-    let allLoaded = true;
-    Object.keys(resources.images).forEach((key) => {
-      if (!resources.images[key].isLoaded) {
-        allLoaded = false;
-      }
-    });
-    allLoaded && setCanDraw(true);
-  };
-
-  !canDraw && resources && resources.images && getResourceStatus();
+  let hero = undefined;
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const draw = () => {
-      console.log("drawing");
-      const sky = resources.images.sky;
-      if (sky.isLoaded) {
-        ctx.drawImage(sky.image, 0, 0);
-      }
+    setCtx(canvas.getContext("2d"));
+    const checkIsLoaded = () => {
+      let counter = 0;
+
+      const getResourceStatus = () => {
+        console.log("getting resource status");
+        let allLoaded = true;
+        Object.keys(resources.images).forEach((key) => {
+          if (!resources.images[key].isLoaded) {
+            allLoaded = false;
+          }
+        });
+        return allLoaded;
+      };
+
+      var interval = setInterval(function () {
+        counter++;
+        console.log("hit interval function", counter);
+        if (getResourceStatus()) {
+          setCanDraw(true);
+          clearInterval(interval);
+        }
+        counter > 20 && clearInterval(interval);
+      }, 100);
     };
-    draw();
+
+    !canDraw && checkIsLoaded();
   }, []);
-  console.log("canDraw", canDraw);
+
+  if (canDraw) {
+    // need validation for loading in sprites
+    hero = new Sprite({
+      resource: resources.images.hero,
+      hframes: 3,
+      vframes: 8,
+      frame: 1,
+    });
+
+    draw(resources, ctx);
+  }
 
   return (
     <MainContainer>
