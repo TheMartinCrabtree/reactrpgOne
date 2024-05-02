@@ -24,25 +24,50 @@ const draw = (resources, ctx) => {
   //   ctx.drawImage(sky.image, 0, 0);
   // }
   // need validation for loading in sprites
-  // const heroSprite = new Sprite({
-  //   resource: resources.images.hero,
-  //   frameSize: new Vector2(32, 32),
-  //   hframes: 3,
-  //   vframes: 8,
-  //   frame: 1,
-  // });
+
+  /*
+  const heroSprite = new Sprite({
+    resource: resources.images.hero,
+    frameSize: new Vector2(32, 32),
+    hframes: 3,
+    vframes: 8,
+    frame: 1,
+  });
+  
+  const groundSprite = new Sprite({
+      resource: resources.images.ground,
+      frameSize: new Vector2(320, 180),
+  });
+  */
+  const drawImage = (sprite, x, y) => {
+    // let frameCoordX = 0;
+    // let frameCoordY = 0;
+    // const frame = sprite.frameMap.get(this.frame);
+    // if (frame) {
+    //   frameCoordX = frame.x;
+    //   frameCoordY = frame.y;
+    // }
+
+    ctx.drawImage(
+      sprite.resource.image,
+      sprite.frameCoordX ?? 0, // position x of frame on sprite sheet
+      sprite.frameCoordY ?? 0, // position y of frame on sprite sheet
+      sprite.frameSize.x ?? 0, // size of sprite on the sheet
+      sprite.frameSize.y ?? 0, // size of sprite on the sheet
+      x, // position on canvas
+      y, // position on canvas
+      sprite.scale, // relative scale x
+      sprite.scale // relative scale y
+    );
+  };
 
   const skySprite = new Sprite({
     resource: resources.images.sky,
     frameSize: new Vector2(320, 180),
   });
-
-  // const groundSprite = new Sprite({
-  //   resource: resources.images.ground,
-  //   frameSize: new Vector2(320, 180),
-  // });
   console.log("Sprite class values: ", skySprite);
-  skySprite.drawImage(ctx, 0, 0);
+  drawImage(skySprite, 0, 0);
+  // skySprite.drawImage(ctx, 0, 0);
   // groundSprite.drawImage(ctx, 0, 0);
   // heroSprite.drawImage(ctx, heroPos.x, heroPos.y);
 };
